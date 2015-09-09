@@ -3,3 +3,53 @@ Myriad
 ======
 
 A Scala Akka library for swarm intelligence algorithms
+
+###How It Works
+--------------
+Integration with Myriad involves defining the problem you're aiming to solve. This is done by fufilling either the ACO or PSO contract, depending on which algorithm is more appropriate to your use case. 
+
+######1. Create a class that extends the respective interface
+
+  ```
+  class MyPSOClass extends PSOInterface {
+    ...
+  }
+  ```
+  or
+
+  ```
+  class MyACOClass extends ACOInterface {
+    ...
+  }
+  ```
+
+######2. Override the objective function, defining it to fit your requirements.
+
+  ```
+  class MyClass extends PSOInterface {
+    override def objectiveFunction(particle: Solution): Double = {
+      if particle.value > 5
+        particle.value 
+      else 
+        5
+    }
+    ...
+  }
+  ```
+
+######3. Override any optional functions or values to gain more control of the operation of the swarm.
+
+  ```
+  class MyClass extends PSOInterface {
+    override def objectiveFunction(particle: Solution): Double = {
+      if particle.value > 5
+        particle.value 
+      else 
+        5
+    }
+    
+    override def terminationCriteria: Boolean = {
+      false
+    }
+  }
+  ```

@@ -1,0 +1,3 @@
+class Ant extends Solution {
+
+}
