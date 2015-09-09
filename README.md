@@ -1,4 +1,4 @@
-![Myriad](https://cloud.githubusercontent.com/assets/4529818/9751177/7e676a1c-566f-11e5-8692-9935e08d6bb5.jpg)
+![Myriad](https://cloud.githubusercontent.com/assets/4529818/9751216/fe7eb9ee-566f-11e5-8aac-06ba19cf34ec.jpg)
 Myriad
 ======
 
