@@ -11,5 +11,6 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor" % "2.4-M3"
+  "com.typesafe.akka" %% "akka-actor" % "2.4-M3",
+  "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
 )

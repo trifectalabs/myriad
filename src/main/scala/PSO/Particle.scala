@@ -1,15 +1,19 @@
+import Main._
 import akka.actor._
+import WorkerMessages._
 
-sealed trait ParticleMessage
-case class NeighbourhoodUpdate(neighbours: List[ActorRef]) extends ParticleMessage
-//case class GlobalBestUpdate(best: TrainingPlan) extends ParticleMessage
+abstract class Particle extends Worker {
+  override def receive = {
+    case UpdateGlobalBest(v: Double) => println(s"Updating my global best value to: $v")
+    case _ => 
+      println("do shit when they talk")
+  }
+
+  override val solution = List[Double]()
+}
 
 //Class defining a single particle in the particle swarm optimization algorithm (PSO)
-class Particle extends Actor {
-  def receive = {
-    case NeighbourhoodUpdate(neighbours) => 
-      println("I should update the neighbourhood here")
- //   case GlobalBestUpdate(best) => 
-  //    println("I should update the global best here")
-  }
+
+class ParticleImpl extends Particle {
 }
+
