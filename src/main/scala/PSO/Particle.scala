@@ -29,19 +29,19 @@ class Particle(id: Int, initVelocity: List[Double], inertiaW: Double, accelCoeff
       currPos = UpdatePosition()
       println(s"Particle $id changed velocity from $oldVel to $currVel")
       println(s"Particle $id moved from $oldPos to $currPos")
-      if (objectiveFunction(currPos) > objectiveFunction(localBest)) {
+      if (objectiveFunction(currPos) < objectiveFunction(localBest)) {
         val oldLBest = localBest
         localBest = currPos
         println(s"Particle $id improved local best from $oldLBest to $localBest")
       }
-      if (objectiveFunction(currPos) > objectiveFunction(neighbourhoodBest)) {
+      if (objectiveFunction(currPos) < objectiveFunction(neighbourhoodBest)) {
         val oldNBest = neighbourhoodBest
         neighbourhoodBest = currPos
         println(s"Particle $id improved neighbourhood best from $oldNBest to $neighbourhoodBest")
         neighbourhood.foreach(n => n ! UpdateNeighbourhoodBest(neighbourhoodBest))
       }
     case UpdateNeighbourhoodBest(best: List[Double]) =>
-      if (objectiveFunction(best) > objectiveFunction(neighbourhoodBest)) {
+      if (objectiveFunction(best) < objectiveFunction(neighbourhoodBest)) {
         println(s"Particle $id updating neighbourhood best value to $best")
         neighbourhoodBest = best
       } else {
