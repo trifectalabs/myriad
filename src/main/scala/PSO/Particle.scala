@@ -1,4 +1,6 @@
-import Main._
+package com.trifectalabs.myriad
+package pso
+
 import akka.actor._
 
 sealed trait ParticleMessage

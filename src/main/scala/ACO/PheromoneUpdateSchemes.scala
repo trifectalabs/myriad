@@ -1,3 +1,6 @@
+package com.trifectalabs.myriad
+package aco
+
 sealed trait PheromoneUpdate
 
 object PheromoneUpdate {

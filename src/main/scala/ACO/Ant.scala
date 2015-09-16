@@ -1,3 +1,6 @@
+package com.trifectalabs.myriad
+package aco
+
 sealed trait Ant extends Worker {
   override def receive = {
     case _ => 

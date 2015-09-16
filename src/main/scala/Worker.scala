@@ -1,3 +1,5 @@
+package com.trifectalabs.myriad
+
 import akka.actor._
 
 // A worker can be a particle or an ant
