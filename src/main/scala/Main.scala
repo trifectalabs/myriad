@@ -3,7 +3,6 @@ package com.trifectalabs.myriad
 import aco._
 import pso._
 import akka.actor._
-import WorkerMessages._
 
 object Main extends App {
 //  val system = ActorSystem("SwarmSystem")
@@ -15,7 +14,13 @@ object Main extends App {
 
   println("Creating a few particles")
 
-  val conf = PSOConfiguration(objectiveFunction = obj) 
+  val conf = PSOConfiguration(
+    problemType = ProblemType.Minimization,
+    numParticles = 10,
+    topology = ParticleTopology.FullyConnected,
+    objectiveFunction = obj,
+    terminationCriteria = TerminationCriteria()
+  ) 
   val psoJob = new PSOFactory(conf)
   psoJob.run
 }
