@@ -4,6 +4,8 @@ Myriad
 
 A Scala Akka library for swarm intelligence algorithms
 
+[ ![Codeship Status for trifectalabs/myriad](https://codeship.com/projects/65153110-4494-0133-5e73-4a5ed300113a/status?branch=master)](https://codeship.com/projects/104435)
+
 ###How It Works
 --------------
 Integration with Myriad involves defining the problem you're aiming to solve. This is done by fufilling either the ACO or PSO contract, depending on which algorithm is more appropriate to your use case. 
