@@ -2,7 +2,7 @@ name := "myriad"
 
 organization := "trifectalabs"
 
-version := "1.0"
+version := IO.read(file(".").getParentFile() / "VERSION").stripLineEnd
 
 scalaVersion := "2.11.7"
 
