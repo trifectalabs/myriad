@@ -36,7 +36,8 @@ case class CurrentNeighbourhood(
 class Particle(initVelocity: List[Double], inertia: Double, localAccel: Double,
     neighbourhoodAccel: Double, localR: Double, neighbourhoodR: Double,
     lbest: List[Double], nbest: List[Double], problemType: ProblemType.Value,
-    objectiveFunction: List[Double] => Double) extends Actor {
+    objectiveFunction: List[Double] => Double,
+    master: ActorRef) extends Actor {
   val w = inertia
   val c1 = localAccel
   val c2 = neighbourhoodAccel
@@ -47,6 +48,7 @@ class Particle(initVelocity: List[Double], inertia: Double, localAccel: Double,
   var localBest = lbest
   var neighbourhoodBest = nbest
   var neighbourhood = Set[ActorRef]()
+  workerCheckIn()
 
   override def receive: Receive = {
     // Update velocity and position then check if bests need to be updated
@@ -68,7 +70,7 @@ class Particle(initVelocity: List[Double], inertia: Double, localAccel: Double,
     // Print local and neighbourhood bests to console
     case ReportRequest =>
       sender ! Report(currVel, currPos, localBest, neighbourhoodBest)
-      println(s"Particle: lbest = $localBest, nbest = $neighbourhoodBest")
+      // println(s"Particle: lbest = $localBest, nbest = $neighbourhoodBest")
     // Handle unknown messages
     case _ =>
       throw new RuntimeException("Unknown particle message type")
@@ -79,6 +81,8 @@ class Particle(initVelocity: List[Double], inertia: Double, localAccel: Double,
     calculateNewPosition()
     updateLocalBestIfNecessary()
     updateNeighbourhoodBestIfNecessary()
+    workerCheckIn()
+    // println(self.toString + "\tat score of\t" + objectiveFunction(currPos))
   }
 
   // Calculate and update new velocity for the particle
@@ -130,5 +134,10 @@ class Particle(initVelocity: List[Double], inertia: Double, localAccel: Double,
     )
     if (update) neighbourhoodBest = position
   }
-}
 
+  private def workerCheckIn() = {
+    master ! WorkerCheckIn(
+      ParticleState(currVel, currPos, localBest, neighbourhoodBest)
+    )
+  }
+}

@@ -30,14 +30,14 @@ class PSOExecutor(pso: PSOSystem) extends Executor {
     println(s"\tOptimization Function: ${pso.config.objectiveFunction}")
     println(s"\tTermination Criteria: ${pso.config.terminationCriteria}")
 
+    pso.master ! PrintSwarmScore
+
     // termination criteria is # of iterations
     for(i <- 1 to 1000) {
       pso.particles.foreach(p => p ! ComputeIteration)
     }
-    // wait for actors to process all messages and print results
-    Thread.sleep(1000)
-    pso.particles.foreach(p => p ! ReportRequest)
 
+    pso.system.shutdown()
     Future{Result(finalValue = 1)}
   }
 }

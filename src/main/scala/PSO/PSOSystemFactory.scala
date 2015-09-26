@@ -28,6 +28,11 @@ class PSOSystemFactory(config: PSOConfiguration) {
 
   def build(randomSeed: Option[Int] = None): PSOSystem = {
     val system = ActorSystem("SwarmSystem")
+    val master = system.actorOf(Props(
+      classOf[SwarmMaster],
+      obj,
+      config.problemType
+    ))
     val r = randomSeed match {
       case None => new scala.util.Random(System.currentTimeMillis)
       case Some(seed) => new scala.util.Random(seed)
@@ -46,7 +51,7 @@ class PSOSystemFactory(config: PSOConfiguration) {
         velocity, config.inertia, config.localAccel,
         config.neighbourhoodAccel, r.nextDouble(),
         r.nextDouble(), solution, bestSolution,
-        config.problemType, obj)
+        config.problemType, obj, master)
       )
     }
     // connect particles based on topology
@@ -64,6 +69,6 @@ class PSOSystemFactory(config: PSOConfiguration) {
       case ParticleTopology.BinaryTree =>
         ParticleTopology.formBinaryTree(particles)
     }
-    PSOSystem(system, config, particles)
+    PSOSystem(system, config, master, particles)
   }
 }

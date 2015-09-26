@@ -15,23 +15,24 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // 02110-1301, USA.
 
-package pso
+package com.trifecta.myriad
 
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.WordSpecLike
 import org.scalatest.Matchers
 
-import com.trifectalabs.myriad.ProblemType
+import com.trifectalabs.myriad.{ ProblemType, SwarmRequest, SwarmReport,
+  ParticleState }
 import com.trifectalabs.myriad.pso.{ PSOConfiguration, PSOSystemFactory,
-  ParticleTopology, ReportRequest, Report, ComputeIteration }
+  ParticleTopology, ComputeIteration }
 import com.typesafe.config.ConfigFactory
 
 import akka.actor.ActorSystem
 import akka.testkit.{ DefaultTimeout, ImplicitSender, TestKit }
 import scala.concurrent.duration._
 
-class ParticleSpec
-  extends TestKit(ActorSystem("ParticleSpec"))
+class SwarmMonitorSpec
+  extends TestKit(ActorSystem("SwarmMonitorSpec"))
   with DefaultTimeout with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll {
   // setup
@@ -50,56 +51,67 @@ class ParticleSpec
   )
   val psoSystemFactory = new PSOSystemFactory(conf)
   val pso = psoSystemFactory.build(randomSeed = Some(0))
+  val master = pso.master
   val particles = pso.particles
 
   override def afterAll {
     shutdown()
   }
 
-  "A particle" should {
-    "update its velocity, position, local best and neighbourhood best" in {
+  "A master" should {
+    "know about all the particles" in {
       within(500.millis) {
-        particles.head ! ReportRequest
-        expectMsg(
-          Report(
+        master ! SwarmRequest
+        val expectedState = Map(
+          particles.head -> ParticleState(
             List(5.0, 5.0),
             List(-5.0, -5.0),
             List(-5.0, -5.0),
-            List(-3.0, -3.0))
+            List(-3.0, -3.0)
+          ),
+          particles(1) -> ParticleState(
+            List(5.0, 5.0),
+            List(-4.0, -4.0),
+            List(-4.0, -4.0),
+            List(-3.0, -3.0)
+          ),
+          particles(2) -> ParticleState(
+            List(5.0, 5.0),
+            List(-3.0, -3.0),
+            List(-3.0, -3.0),
+            List(-3.0, -3.0)
+          )
         )
+        expectMsg(SwarmReport(expectedState))
+      }
+    }
+
+    "update the state of the swarm" in {
+      within(500.millis) {
         particles.head ! ComputeIteration
-        particles.head ! ReportRequest
-        expectMsg(
-          Report(
+        Thread.sleep(10)
+        master ! SwarmRequest
+        val expectedState = Map(
+          particles.head -> ParticleState(
             List(4.678915239158937, 4.678915239158937),
             List(-0.32108476084106297, -0.32108476084106297),
             List(-0.32108476084106297, -0.32108476084106297),
             List(-0.32108476084106297, -0.32108476084106297)
-          )
-        )
-      }
-    }
-
-    "update its neighbour's neighbourhood best" in {
-      within(500.millis) {
-        particles(1) ! ReportRequest
-        expectMsg(
-          Report(
+          ),
+          particles(1) -> ParticleState(
             List(5.0, 5.0),
             List(-4.0, -4.0),
             List(-4.0, -4.0),
-            List(-0.32108476084106297, -0.32108476084106297)
-          )
-        )
-        particles(2) ! ReportRequest
-        expectMsg(
-          Report(
+            List(-3.0, -3.0)
+          ),
+          particles(2) -> ParticleState(
             List(5.0, 5.0),
             List(-3.0, -3.0),
             List(-3.0, -3.0),
-            List(-0.32108476084106297, -0.32108476084106297)
+            List(-3.0, -3.0)
           )
         )
+        expectMsg(SwarmReport(expectedState))
       }
     }
   }
