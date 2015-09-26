@@ -57,16 +57,14 @@ object ParticleTopology extends Enumeration {
       w.toInt
     } else {
       throw new RuntimeException(
-        "To use this topology particles must fit in a square grid"
-      )
+        "To use this topology particles must fit in a square grid")
     }
     val cols = (1 to particleCount).map(p => (p - 1) % width)
     val rows = (1 to particleCount).map(p => (p - 1) / width)
     val pos = rows.zip(cols)
     val particlePos = particles.zip(pos)
     val particleGrid = new Array[Array[ActorRef]](width).map(_ =>
-      new Array[ActorRef](width)
-    )
+      new Array[ActorRef](width))
     particlePos.foreach(p => particleGrid(p._2._1)(p._2._2) = p._1)
     (width, pos.toList, particleGrid)
   }

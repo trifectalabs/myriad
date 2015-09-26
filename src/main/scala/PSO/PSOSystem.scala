@@ -24,5 +24,5 @@ case class PSOSystem(
   system: ActorSystem,
   config: PSOConfiguration,
   master: ActorRef,
-  particles: List[ActorRef]
-)
+  particles: List[ActorRef])
+

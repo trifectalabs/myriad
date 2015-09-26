@@ -24,3 +24,4 @@ trait Worker extends Actor {
   def receive: Receive = { case _ => }
   val solution: List[AnyVal]
 }
+
