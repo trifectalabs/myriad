@@ -8,50 +8,36 @@ A Scala Akka library for swarm intelligence algorithms
 
 ###How It Works
 --------------
-Integration with Myriad involves defining the problem you're aiming to solve. This is done by fufilling either the ACO or PSO contract, depending on which algorithm is more appropriate to your use case. 
 
-######1. Create a class that extends the respective interface
-
-  ```
-  class MyPSOClass extends PSOInterface {
-    ...
-  }
-  ```
-  or
+######1. Create an objective function which looks something like this
 
   ```
-  class MyACOClass extends ACOInterface {
+  def objectiveFunction(X: List[Double]): Double {
     ...
   }
   ```
 
-######2. Override the objective function, defining it to fit your requirements.
+######2. Declare a config using your objective function and specify some initial solutions
+The number of solutions specified will determine the size of the swarm. The only two required parameters are the objective function and initial solutions but all of the other parameters are customizable as well.
 
   ```
-  class MyClass extends PSOInterface {
-    override def objectiveFunction(particle: Solution): Double = {
-      if particle.value > 5
-        particle.value 
-      else 
-        5
-    }
+  val conf = PSOConfiguration(
+    objectiveFunction = obj,
+    initialSolutions = solutions,
     ...
-  }
+  )
   ```
 
-######3. Override any optional functions or values to gain more control of the operation of the swarm.
+######3. Create a factory to build the optimization system
 
   ```
-  class MyClass extends PSOInterface {
-    override def objectiveFunction(particle: Solution): Double = {
-      if particle.value > 5
-        particle.value 
-      else 
-        5
-    }
-    
-    override def terminationCriteria: Boolean = {
-      false
-    }
-  }
+  val psoSystemFactory = new PSOSystemFactory(conf)
+  val pso = psoSystemFactory.build()
+  ```
+
+######4. Create an exectuor to run the optimization
+
+  ```
+  val psoJob = new PSOExecutor(pso)
+  psoJob.run
   ```
