@@ -33,8 +33,7 @@ import akka.testkit.{ DefaultTimeout, ImplicitSender, TestKit }
 import scala.concurrent.duration._
 
 class ParticleTopologySpec
-  extends TestKit(ActorSystem("ParticleTopologySpec",
-    ConfigFactory.parseString(ParticleTopologySpec.config)))
+  extends TestKit(ActorSystem("ParticleTopologySpec"))
   with DefaultTimeout with ImplicitSender
   with WordSpecLike with Matchers with BeforeAndAfterAll {
   // setup
@@ -257,12 +256,3 @@ class ParticleTopologySpec
   }
 }
 
-object ParticleTopologySpec {
-
-  val config = """
-    akka {
-      loglevel = "WARNING"
-    }
-    """
-
-}
