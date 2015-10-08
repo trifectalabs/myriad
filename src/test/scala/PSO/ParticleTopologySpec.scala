@@ -49,8 +49,7 @@ class ParticleTopologySpec
   val conf = PSOConfiguration(
     problemType = ProblemType.Minimization,
     objectiveFunction = obj,
-    initialSolutions = solutions
-  )
+    initialSolutions = solutions)
   val psoSystemFactory = new PSOSystemFactory(conf)
   val pso = psoSystemFactory.build()
   val particles = pso.particles
@@ -68,18 +67,18 @@ class ParticleTopologySpec
         // first connected to last and second
         particles.head ! GetNeighbourhood
         expectMsg(
-          CurrentNeighbourhood(Set(particles.takeRight(1).head, particles(1)))
-        )
+          CurrentNeighbourhood(
+            Set(particles.takeRight(1).head, particles(1))))
         // last connected to first and second last
         particles.takeRight(1).head ! GetNeighbourhood
         expectMsg(
-          CurrentNeighbourhood(Set(particles.head, particles.takeRight(2).head))
-        )
+          CurrentNeighbourhood(
+            Set(particles.head, particles.takeRight(2).head)))
         (1 until particles.length - 1).foreach{ x =>
           particles(x) ! GetNeighbourhood
           expectMsg(
-            CurrentNeighbourhood(Set(particles(x - 1), particles(x + 1)))
-          )
+            CurrentNeighbourhood(
+              Set(particles(x - 1), particles(x + 1))))
         }
         // clear neighbourhoods for next test
         particles.foreach(_ ! UpdateNeighbourhood(Set()))
@@ -109,36 +108,34 @@ class ParticleTopologySpec
         // top side
         particles(1) ! GetNeighbourhood
         expectMsg(
-          CurrentNeighbourhood(Set(particles.head, particles(2), particles(4)))
-        )
+          CurrentNeighbourhood(
+            Set(particles.head, particles(2), particles(4))))
         // top right corner
         particles(2) ! GetNeighbourhood
         expectMsg(CurrentNeighbourhood(Set(particles(1), particles(5))))
         // left side
         particles(3) ! GetNeighbourhood
         expectMsg(
-          CurrentNeighbourhood(Set(particles.head, particles(4), particles(6)))
-        )
+          CurrentNeighbourhood(
+            Set(particles.head, particles(4), particles(6))))
         // center
         particles(4) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(1), particles(3), particles(5), particles(7))
-          )
-        )
+            Set(particles(1), particles(3), particles(5), particles(7))))
         // right side
         particles(5) ! GetNeighbourhood
         expectMsg(
-          CurrentNeighbourhood(Set(particles(2), particles(4), particles(8)))
-        )
+          CurrentNeighbourhood(
+            Set(particles(2), particles(4), particles(8))))
         // bottom left corner
         particles(6) ! GetNeighbourhood
         expectMsg(CurrentNeighbourhood(Set(particles(3), particles(7))))
         // bottom side
         particles(7) ! GetNeighbourhood
         expectMsg(
-          CurrentNeighbourhood(Set(particles(4), particles(6), particles(8)))
-        )
+          CurrentNeighbourhood(
+            Set(particles(4), particles(6), particles(8))))
         // bottom right corner
         particles(8) ! GetNeighbourhood
         expectMsg(CurrentNeighbourhood(Set(particles(5), particles(7))))
@@ -154,65 +151,47 @@ class ParticleTopologySpec
         particles.head ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(1), particles(3), particles(2), particles(6))
-          )
-        )
+            Set(particles(1), particles(3), particles(2), particles(6))))
         // top side
         particles(1) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles.head, particles(2), particles(4), particles(7))
-          )
-        )
+            Set(particles.head, particles(2), particles(4), particles(7))))
         // top right corner
         particles(2) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(1), particles(5), particles.head, particles(8))
-          )
-        )
+            Set(particles(1), particles(5), particles.head, particles(8))))
         // left side
         particles(3) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles.head, particles(4), particles(6), particles(5))
-          )
-        )
+            Set(particles.head, particles(4), particles(6), particles(5))))
         // center
         particles(4) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(1), particles(3), particles(5), particles(7))
-          )
-        )
+            Set(particles(1), particles(3), particles(5), particles(7))))
         // right side
         particles(5) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(2), particles(4), particles(8), particles(3))
-          )
-        )
+            Set(particles(2), particles(4), particles(8), particles(3))))
         // bottom left corner
         particles(6) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(3), particles(7), particles.head, particles(8))
-          )
-        )
+            Set(particles(3), particles(7), particles.head, particles(8))))
         // bottom side
         particles(7) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(4), particles(6), particles(8), particles(1))
-          )
-        )
+            Set(particles(4), particles(6), particles(8), particles(1))))
         // bottom right corner
         particles(8) ! GetNeighbourhood
         expectMsg(
           CurrentNeighbourhood(
-            Set(particles(5), particles(7), particles(2), particles(6))
-          )
-        )
+            Set(particles(5), particles(7), particles(2), particles(6))))
         // clear neighbourhoods for next test
         particles.foreach(_ ! UpdateNeighbourhood(Set()))
       }

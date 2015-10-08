@@ -29,18 +29,17 @@ case class TerminationCriteria(
   // improvementDelta in improvementIter iterations then the
   // algorithm will terminate. Must be specified together.
   improvementDelta: Option[Double] = None,
-  improvementIter: Option[Int] = None
-)
+  improvementIter: Option[Int] = None)
 
 case class PSOConfiguration(
   objectiveFunction: List[Double] => Double,
   initialSolutions: List[List[Double]],
   initialVelocity: Option[List[Double]] = None,
+  searchSpace: Option[List[(Double, Double)]] = None,
   problemType: ProblemType.Value = ProblemType.Maximization,
-  topology: ParticleTopology.Value = ParticleTopology.Grid,
+  topology: ParticleTopology.Value = ParticleTopology.Toroidal,
   terminationCriteria: TerminationCriteria = TerminationCriteria(),
   inertia: Double = 0.792,
   localAccel: Double = 1.4944,
-  neighbourhoodAccel: Double = 1.4944
-)
+  neighbourhoodAccel: Double = 1.4944)
 

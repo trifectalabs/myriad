@@ -24,5 +24,5 @@ trait Executor {
 }
 
 case class Result(
-  finalValue: AnyVal
-)
+  finalValue: Either[List[Double], List[Int]])
+
