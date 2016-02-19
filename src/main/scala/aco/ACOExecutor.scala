@@ -16,14 +16,36 @@
 // 02110-1301, USA.
 
 package com.trifectalabs.myriad
+package aco
 
-import com.trifectalabs.myriad.aco.Path
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
+
 import scala.concurrent.Future
 
-trait Executor {
-  def run: Future[Result]
-}
+class ACOExecutor(aco: ACOSystem) extends Executor {
+  override def run: Future[Result] = {
+    (0 until aco.config.numberOfAnts).foreach(a =>
+      aco.nodes(aco.config.start) ! AntMessage(a, List(), None, None))
 
-case class Result(
-  finalValue: Either[List[Double], List[Path]])
+    implicit val timeout = Timeout(5.seconds)
+    implicit val ec = aco.system.dispatcher
+
+    val best: Future[Any] =
+      aco.nodes(aco.config.finish) ? ResultRequest
+
+    best.map(_ match {
+      case ColonyBest(b) => b match {
+        case None => Result(Right(List()))
+        case Some(s) => Result(Right(s.asInstanceOf[List[Path]]))
+      }
+      case _ => throw new RuntimeException("Unknown answer type")
+    })
+  }
+
+  def shutdown: Unit = {
+    aco.system.terminate()
+  }
+}
 

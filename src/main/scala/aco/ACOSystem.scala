@@ -16,14 +16,12 @@
 // 02110-1301, USA.
 
 package com.trifectalabs.myriad
+package aco
 
-import com.trifectalabs.myriad.aco.Path
-import scala.concurrent.Future
+import akka.actor.{ActorRef, ActorSystem}
 
-trait Executor {
-  def run: Future[Result]
-}
-
-case class Result(
-  finalValue: Either[List[Double], List[Path]])
+case class ACOSystem(
+  system: ActorSystem,
+  nodes: List[ActorRef],
+  config: ACOConfiguration)
 
