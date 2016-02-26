@@ -42,6 +42,7 @@ case class ACOConfiguration(
   multiPathCollapse: Boolean = false,
   alpha: Double = 1.0,
   beta: Double = 1.0,
-  Q: Double = 4.0,
+  Q: Double = 1.0,
+  pheromoneDecayRate: Double = 0.1,
   terminationCriteria: TerminationCriteria = TerminationCriteria())
 

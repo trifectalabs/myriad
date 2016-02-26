@@ -70,7 +70,7 @@ class AntSpec
     "minimize distance of travelling salesman" in {
       val conf = ACOConfiguration(
         tsp,
-        25,
+        5,
         5,
         List((0,1),(0,2),(0,3),(0,4),(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)))
       val acoSystemFactory = new ACOSystemFactory(conf)
@@ -78,7 +78,6 @@ class AntSpec
       val acoJob = new ACOExecutor(aco)
       Await.result(acoJob.run, 5 seconds) match {
         case Result(Right(x)) =>
-          println(x)
           assert(x.map(_.distance.get).reduce(_ + _) == 10.0)
         case _ =>
           assert(1 == 0)
