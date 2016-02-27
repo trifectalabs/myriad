@@ -2,7 +2,7 @@
 // Copyright (c) 2016 Josiah Witt, Christopher Poenaru
 
 package com.trifectalabs.myriad
-package pso
+package aco
 
 /** Determines when the algorithm stops and returns a solution */
 // TODO: implement logic for non-maxIterations termination criteria
@@ -17,15 +17,18 @@ case class TerminationCriteria(
   improvementDelta: Option[Double] = None,
   improvementIter: Option[Int] = None)
 
-case class PSOConfiguration(
-  objectiveFunction: List[Double] => Double,
-  initialSolutions: List[List[Double]],
-  initialVelocity: Option[List[Double]] = None,
-  searchSpace: Option[List[(Double, Double)]] = None,
-  problemType: ProblemType.Value = ProblemType.Maximization,
-  topology: ParticleTopology.Value = ParticleTopology.Toroidal,
-  terminationCriteria: TerminationCriteria = TerminationCriteria(),
-  inertia: Double = 0.792,
-  localAccel: Double = 1.4944,
-  neighbourhoodAccel: Double = 1.4944)
+case class ACOConfiguration(
+  distanceFunction: (Int, Int, Int, List[Path]) => Double,
+  numberOfAnts: Int,
+  numberOfNodes: Int,
+  paths: List[(Int, Int)],
+  start: Int = 0,
+  finish: Int = 0,
+  directedPaths: Boolean = false,
+  multiPathCollapse: Boolean = false,
+  alpha: Double = 1.0,
+  beta: Double = 1.0,
+  Q: Double = 1.0,
+  pheromoneDecayRate: Double = 0.1,
+  terminationCriteria: TerminationCriteria = TerminationCriteria())
 

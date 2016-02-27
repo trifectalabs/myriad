@@ -2,13 +2,12 @@
 // Copyright (c) 2016 Josiah Witt, Christopher Poenaru
 
 package com.trifectalabs.myriad
-package pso
+package aco
 
 import akka.actor.{ActorRef, ActorSystem}
 
-case class PSOSystem(
+case class ACOSystem(
   system: ActorSystem,
-  config: PSOConfiguration,
-  master: ActorRef,
-  particles: List[ActorRef])
+  nodes: List[ActorRef],
+  config: ACOConfiguration)
 
