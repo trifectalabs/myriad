@@ -15,7 +15,7 @@ class ACOExecutor(aco: ACOSystem) extends Executor {
     (0 until aco.config.numberOfAnts).foreach(a =>
       aco.nodes(aco.config.start) ! AntMessage(a, List(), None, None))
 
-    implicit val timeout = Timeout(5.seconds)
+    implicit val timeout = Timeout(10.seconds)
     implicit val ec = aco.system.dispatcher
 
     val best: Future[Any] =

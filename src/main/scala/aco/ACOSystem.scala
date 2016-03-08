@@ -11,3 +11,7 @@ case class ACOSystem(
   nodes: List[ActorRef],
   config: ACOConfiguration)
 
+object ACOUtil {
+  val r = new scala.util.Random(System.currentTimeMillis)
+}
+
