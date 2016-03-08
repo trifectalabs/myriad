@@ -24,8 +24,7 @@ case class AntMessage(
 
 class PlaceAgent(
   nodeNumber: Int,
-  conf: ACOConfiguration,
-  randomSeed: Option[Long]
+  conf: ACOConfiguration
 ) extends Actor {
   val distance = conf.distanceFunction
   val paths = conf.paths
@@ -36,6 +35,7 @@ class PlaceAgent(
   val node = Node(nodeNumber, self)
   var neighbourhood = scala.collection.mutable.HashMap.empty[Int, List[Path]]
   var antsSeen = scala.collection.mutable.HashMap.empty[Int, Int]
+  (0 until conf.numberOfAnts).foreach(a => antsSeen(a) = 0)
   var bestPathSeen: Option[List[Path]] = None
   var bestPathSeenCost: Option[Double] = None
   var start: Option[Node] = None
@@ -69,10 +69,10 @@ class PlaceAgent(
   def newNeighbour(id: Int, neighbour: ActorRef): Unit = {
     val nNode = Node(id, neighbour)
     if (neighbourhood contains id) {
-      val index = neighbourhood(id).length + 1
+      val index = neighbourhood(id).length
       neighbourhood(id) = neighbourhood(id) :+ Path(node, nNode, index, 1.0)
     } else {
-      neighbourhood += (id -> List(Path(node, nNode, 0, 0.5)))
+      neighbourhood += (id -> List(Path(node, nNode, 0, 1.0)))
     }
   }
 
@@ -84,8 +84,7 @@ class PlaceAgent(
   ): Unit = {
     // update iteration count
     if (!path.map(_.begin.id).contains(nodeNumber)) {
-      if (antsSeen contains antID) antsSeen(antID) = antsSeen(antID) + 1
-      else antsSeen(antID) = 1
+      antsSeen(antID) = antsSeen(antID) + 1
     }
     updateIncomingPathPheromones(path)
     if (nodeNumber == finish.get.id && path.length > 0) {
@@ -149,17 +148,21 @@ class PlaceAgent(
     validPaths: List[Path]
   ): (Path, Double) = {
     // Calculate distances along each of the available paths
-    val dist = validPaths.map(p =>
-      (distance(nodeNumber, p.end.id, p.index, currentPath), p.pheromone))
-    val sum = dist.map(s => math.pow(s._1, alpha) / math.pow(s._2, beta))
+    val distIndex = validPaths.map(p =>
+      (p.pheromone, distance(nodeNumber, p.end.id, p.index, currentPath)))
+      .zipWithIndex
+    val dist = distIndex
+      .filter(d => d._1._2 < Double.PositiveInfinity && d._1._2 >= 0.0)
+    val sum = dist.map(s => math.pow(s._1._1, alpha) / math.pow(s._1._2, beta))
       .reduce(_ + _)
     val prob =
-      dist.map(p => math.pow(p._1, alpha) / math.pow(p._2, beta) / sum)
-    val r = new scala.util.Random(
-      randomSeed.getOrElse(System.currentTimeMillis)).nextDouble()
-    val nextPathIndex = prob.foldLeft((0.0, -1))((a, b) =>
-      if (a._1 < r) (a._1 + b, a._2 + 1) else a)._2
-    (validPaths(nextPathIndex), dist(nextPathIndex)._1)
+      dist.map(p => math.pow(p._1._1, alpha) / math.pow(p._1._2, beta) / sum)
+    val rand = ACOUtil.r.nextDouble()
+    val index = prob.foldLeft((0.0, -1))((a, b) =>
+      if (a._1 < rand) (a._1 + b, a._2 + 1) else a)
+    val nextPathIndex = dist(index._2)._2
+
+    (validPaths(nextPathIndex), dist(index._2)._1._2)
   }
 
   def sendAntDownNextPath(

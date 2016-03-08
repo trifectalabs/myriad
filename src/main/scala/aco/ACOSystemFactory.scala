@@ -7,12 +7,10 @@ package aco
 import akka.actor.{ActorSystem, Props}
 
 class ACOSystemFactory(config: ACOConfiguration) {
-  def build(randomSeed: Option[Long] = None,
-    actorSystem: Option[ActorSystem] = None
-  ): ACOSystem = {
+  def build(actorSystem: Option[ActorSystem] = None): ACOSystem = {
     val system = actorSystem.getOrElse(ActorSystem("AntColonySystem"))
     val placeAgents = (0 until config.numberOfNodes).map(id =>
-      system.actorOf(Props(new PlaceAgent(id, config, randomSeed))))
+      system.actorOf(Props(new PlaceAgent(id, config))))
     placeAgents.foreach{a =>
       a ! StartNode(Node(config.start, placeAgents(config.start)))
       a ! FinishNode(Node(config.finish, placeAgents(config.finish)))
