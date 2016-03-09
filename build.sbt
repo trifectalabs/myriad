@@ -1,6 +1,6 @@
 name := "myriad"
 
-organization := "trifectalabs"
+organization := "com.trifectalabs"
 
 version := IO.read(file(".").getParentFile() / "VERSION").stripLineEnd
 
