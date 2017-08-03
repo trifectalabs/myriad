@@ -6,10 +6,10 @@ A Scala Akka library for swarm intelligence algorithms
 
 [ ![Codeship Status for trifectalabs/myriad](https://codeship.com/projects/65153110-4494-0133-5e73-4a5ed300113a/status?branch=master)](https://codeship.com/projects/104435)
 
-###How It Works
+### How It Works
 --------------
 
-######1. Create an objective function which looks something like this
+###### 1. Create an objective function which looks something like this
 
   ```
   def objectiveFunction(X: List[Double]): Double {
@@ -17,7 +17,7 @@ A Scala Akka library for swarm intelligence algorithms
   }
   ```
 
-######2. Declare a config using your objective function and specify some initial solutions
+###### 2. Declare a config using your objective function and specify some initial solutions
 The number of solutions specified will determine the size of the swarm. The only two required parameters are the objective function and initial solutions but all of the other parameters are customizable as well.
 
   ```
@@ -28,14 +28,14 @@ The number of solutions specified will determine the size of the swarm. The only
   )
   ```
 
-######3. Create a factory to build the optimization system
+###### 3. Create a factory to build the optimization system
 
   ```
   val psoSystemFactory = new PSOSystemFactory(conf)
   val pso = psoSystemFactory.build()
   ```
 
-######4. Create an exectuor to run the optimization
+###### 4. Create an exectuor to run the optimization
 
   ```
   val psoJob = new PSOExecutor(pso)
